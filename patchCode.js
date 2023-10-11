@@ -37,42 +37,42 @@ function reverseHex(hexString)
  */
 function patchCode(...args)
 {
-    console.log("Process.arch：" + Process.arch);
-
-    var nativePointer = Module.getBaseAddress(args[0]).add(args[1]);
-    Memory.patchCode(nativePointer, 4, function (code) 
+    if (args.length > 2)
     {
-        console.log("before======================");
-        console.log(hexdump(nativePointer, { length: 0x50 }));
+        console.log("Process.arch：" + Process.arch);
 
-        if (Process.arch == "arm64")
+        var nativePointer = Module.getBaseAddress(args[0]).add(args[1]);
+        Memory.patchCode(nativePointer, 4, function (code) 
         {
-            var arm64Wt = new Arm64Writer(code, { pc: nativePointer });
-            if (args.length > 2)
+            console.log("before======================");
+            console.log(hexdump(nativePointer, { length: 0x50 }));
+
+            if (Process.arch == "arm64")
             {
+                var arm64Wt = new Arm64Writer(code, { pc: nativePointer });
                 for (var i = 2; i < args.length; i++) 
                 {
                     arm64Wt.putInstruction(reverseHex(args[i]))
                 }
-            }
-            arm64Wt.flush();
-        } else
-        {
-            var armWt = new ArmWriter(code, { pc: nativePointer });
-            if (args.length > 2)
+                arm64Wt.flush();
+            } else
             {
+                var armWt = new ArmWriter(code, { pc: nativePointer });
                 for (var i = 2; i < args.length; i++) 
                 {
                     armWt.putInstruction(reverseHex(args[i]))
                 }
+                armWt.flush();
             }
-            armWt.flush();
-        }
 
-        console.log("\nafter======================");
-        console.log(hexdump(nativePointer, { length: 0x50 }));
+            console.log("\nafter======================");
+            console.log(hexdump(nativePointer, { length: 0x50 }));
+        });
+    } else
+    {
+        console.log("\n参数不够。。。");
+    }
 
-    });
 
 }
 
