@@ -11,6 +11,6 @@ arg[1]:偏移
 arg[2]:指令，可以多个
 
 
-```patchCode("libil2cpp.so", 0x601560, "0100a0e3", "1EFF2FE1");```
+```patchCode("libil2cpp.so", 0x601560, "20 00 80 52", "C0 03 5F D6");```
 
-```patchCode("libil2cpp.so", 0x601560, "0100a0e3", "0200a0e3","1EFF2FE1");```
+```patchCode("libil2cpp.so", 0x601560, "01 00 a0 e3", "02 00 a0 e3","1E FF 2F E1");```
