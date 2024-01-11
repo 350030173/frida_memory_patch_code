@@ -1,28 +1,23 @@
 
 /**
 
-内存指令替换，支持32位，64位
+内存指令替换，支持ARM 32位，64位
 
 */
 
 /**
  * 将给定的十六进制字符串进行倒序处理，并转换为对应的十进制数值
  * 
- * 例：C0035FD6 倒序是 D6 5F 03 C0，再转为10进制是3596551104
+ * 例：C0 03 5F D6 倒序是 D6 5F 03 C0，再转为10进制是3596551104
  * @param {*} hexString 
  * @returns 
  */
 function reverseHex(hexString) 
 {
-    // 将十六进制字符串按两个字符一组切割，并倒序排列
-    const reversedHexChars = hexString.match(/.{1,2}/g).reverse();
-
-    // 将倒序后的十六进制字符串合并为一个新的字符串
-    const reversedHexString = reversedHexChars.join('');
-
-    // 将倒序后的十六进制字符串转换为对应的十进制数值
+	var reversedHexString = hexString.split(' ').reverse().join('');
+	
     const decimalValue = parseInt(reversedHexString, 16);
-
+	
     return decimalValue;
 }
 
@@ -31,7 +26,7 @@ function reverseHex(hexString)
  * args[1]: 目标地址
  * args[2]，args[2]，args[x]: 改变的16进制码,可以有多个
  * 
- * 例:patchCode("libil2cpp.so",0x601560,"0100a0e3","1EFF2FE1")
+ * 例:patchCode("libil2cpp.so",0x601560,"01 00 a0 e3","1E FF 2F E1")
  * 
  * @param  {...any} args 
  */
@@ -40,7 +35,7 @@ function patchCode(...args)
     if (args.length > 2)
     {
         console.log("Process.arch：" + Process.arch);
-
+		//args[0] = "libil2cpp.so";//改成固定的，在控制台输入的的时候不用每次都输入so名称
         var nativePointer = Module.getBaseAddress(args[0]).add(args[1]);
         Memory.patchCode(nativePointer, 4, function (code) 
         {
@@ -78,7 +73,7 @@ function patchCode(...args)
 
 function main()
 {
-    patchCode("libil2cpp.so", 0x601560, "0100a0e3", "1EFF2FE1");
+    patchCode("libil2cpp.so", 0x14a126c, "20 00 80 52", "C0 03 5F D6");
 }
 
 setImmediate(main);
